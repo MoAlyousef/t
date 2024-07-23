@@ -1,0 +1,27 @@
+name: rustbuild
+on: [push, pull_request]
+
+jobs:
+  build-linux-x64:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+      - name: Download deps
+        run: sudo apt-get update && sudo apt-get install -y libpango1.0-dev libx11-dev libxext-dev libxft-dev libxinerama-dev libxcursor-dev libxrender-dev libxfixes-dev libpng-dev
+      - name: CI-Build
+        run: cargo build --release --features=fltk-sys/use-ninja
+      - name: Copy Build Artifact
+        run: cp -r target/release/build/**/out/lib out
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: lib_x86_64-unknown-linux-gnu
+          path: out
