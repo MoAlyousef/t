@@ -19,7 +19,7 @@ jobs:
       - name: CI-Build
         run: cargo build --release --features=fltk-sys/use-ninja
       - name: Copy Build Artifact
-        run: cp -r target/release/build/**/out/lib out/lib
+        run: mkdir out && cp -r target/release/build/**/out/lib out/lib
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2
         with:
